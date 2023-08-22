@@ -6,12 +6,19 @@ import 'package:flutter/foundation.dart';
 mixin ITreeNode<T> on IListenableNode implements ValueListenable<INode> {
   /// ValueNotifier for node expansion/collapse
   late final ValueNotifier<bool> expansionNotifier = ValueNotifier(false);
+  late final ValueNotifier<bool> mayCollapseNotifier = ValueNotifier(true);
 
   /// [ValueNotifier] for data [T] that can be listened for data changes;
   ValueNotifier<T?> get listenableData;
 
   /// Shows whether the node is expanded or not
   bool get isExpanded => expansionNotifier.value;
+
+  bool get mayCollapse => mayCollapseNotifier.value;
+
+  set mayCollapse(bool value) {
+    mayCollapseNotifier.value = value;
+  }
 
   /// The data value of [T] wrapped in the [ITreeNode]
   T? get data => listenableData.value;
@@ -49,15 +56,18 @@ mixin ITreeNode<T> on IListenableNode implements ValueListenable<INode> {
 ///   }
 /// ```
 class TreeNode<T> extends ListenableNode with ITreeNode<T> {
+  bool mayCollapse;
+
   /// A [TreeNode] constructor that can be used with the [TreeView].
   /// Any data of type [T] can be wrapped with [TreeNode]
-  TreeNode({T? data, super.key, super.parent})
+  TreeNode({T? data, super.key, super.parent, this.mayCollapse = true})
       : this.listenableData = ValueNotifier(data);
 
   /// Factory constructor to be used only for root [TreeNode]
-  factory TreeNode.root({T? data}) => TreeNode(key: INode.ROOT_KEY, data: data)
-    ..isLastChild = true
-    ..cacheChildIndices();
+  factory TreeNode.root({T? data, bool mayCollapse = true}) =>
+      TreeNode(key: INode.ROOT_KEY, data: data, )
+        ..isLastChild = true
+        ..cacheChildIndices();
 
   /// [ValueNotifier] for data [T] that can be listened for data changes;
   @override
@@ -76,12 +86,12 @@ class TreeNode<T> extends ListenableNode with ITreeNode<T> {
 class IndexedTreeNode<T> extends IndexedListenableNode with ITreeNode<T> {
   /// A [IndexedTreeNode] constructor that can be used with the [IndexedTreeView].
   /// Any data of type [T] can be wrapped with [IndexedTreeView]
-  IndexedTreeNode({T? data, super.key, super.parent})
+  IndexedTreeNode({T? data, bool mayCollapse = true, super.key, super.parent})
       : this.listenableData = ValueNotifier(data);
 
   /// Factory constructor to be used only for root [IndexedTreeNode]
-  factory IndexedTreeNode.root({T? data}) =>
-      IndexedTreeNode(key: INode.ROOT_KEY, data: data)
+  factory IndexedTreeNode.root({T? data, bool mayCollapse = true}) =>
+      IndexedTreeNode(key: INode.ROOT_KEY, data: data, mayCollapse: mayCollapse)
         ..isLastChild = true
         ..cacheChildIndices();
 

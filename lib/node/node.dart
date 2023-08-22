@@ -14,6 +14,8 @@ class Node extends INode implements INodeActions {
   /// This is the parent [Node]. Only the root node has a null [parent]
   Node? parent;
 
+  bool mayCollapse;
+
   /// Any related data that needs to be accessible from the node can be added to
   /// [meta] without needing to extend or implement the [INode]
   Map<String, dynamic>? meta;
@@ -27,6 +29,7 @@ class Node extends INode implements INodeActions {
   Node({String? key, this.parent})
       : assert(key == null || !key.contains(INode.PATH_SEPARATOR),
             "Key should not contain the PATH_SEPARATOR '${INode.PATH_SEPARATOR}'"),
+        this.mayCollapse = true,
         this.children = <String, Node>{},
         this.key = key ?? UniqueKey().toString();
 
