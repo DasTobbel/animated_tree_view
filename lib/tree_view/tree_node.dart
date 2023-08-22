@@ -6,12 +6,15 @@ import 'package:flutter/foundation.dart';
 mixin ITreeNode<T> on IListenableNode implements ValueListenable<INode> {
   /// ValueNotifier for node expansion/collapse
   late final ValueNotifier<bool> expansionNotifier = ValueNotifier(false);
+  late final ValueNotifier<bool> mayCollapseNotifier = ValueNotifier(true);
 
   /// [ValueNotifier] for data [T] that can be listened for data changes;
   ValueNotifier<T?> get listenableData;
 
   /// Shows whether the node is expanded or not
   bool get isExpanded => expansionNotifier.value;
+
+  bool get mayCollapse => mayCollapseNotifier.value;
 
   /// The data value of [T] wrapped in the [ITreeNode]
   T? get data => listenableData.value;

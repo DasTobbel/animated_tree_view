@@ -247,7 +247,10 @@ class TreeViewExpansionBehaviourController<Data> {
   }
 
   Future<void> toggleExpansion(ITreeNode<Data> item) async {
-    if (item.isExpanded)
+    if (item.isExpanded && item.children != null && item.mayCollapse == false) {
+      return;
+    }
+    else if (item.isExpanded &&  item.mayCollapse)
       await collapseNode(item);
     else {
       expandNode(item);
